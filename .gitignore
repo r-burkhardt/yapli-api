@@ -86,3 +86,12 @@ typings/
 
 # DynamoDB Local files
 .dynamodb/
+
+# IDE folder
+.idea/
+
+# Distribution Folder
+dist/
+
+# Misc System Files and Folders
+.DS_store
