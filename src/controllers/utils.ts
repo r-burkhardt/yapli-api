@@ -1,10 +1,10 @@
 import {Request, Response} from 'express';
-import {Database} from '../utilities/database';
+import {MongoDatabase} from '../utilities/mongo-database';
 import {YapliStockNumber} from '../utilities/yapli-stock-number';
 
 
 export class Utils {
-  db = new Database();
+  // db = new MongoDatabase();
   ysn = new YapliStockNumber();
 
   getUtils = (req: Request, res: Response) => {

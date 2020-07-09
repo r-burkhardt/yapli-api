@@ -5,18 +5,9 @@ import cookieParser from 'cookie-parser';
 import {Route} from './interfaces/routes';
 import {errorHandling} from './middleware/error-handling';
 import mysql from 'mysql';
+// import mongodb = require('mongodb');
 
-import {Database} from './utilities/database';
-
-
-const dbConfig = {
-  host: 'localhost',
-  user: 'root',
-  password: 'kiDx2Bwq@yap',
-  database: 'yapv8',
-};
-
-const db = mysql.createConnection(dbConfig);
+// import {DBConfig} from './enviroment';
 
 
 export class App {
@@ -32,9 +23,6 @@ export class App {
     this.initMiddleware();
     this.initRoutes(routes);
     this.initErrorHandling();
-
-
-
   }
 
   public listen() {
@@ -48,26 +36,18 @@ export class App {
   }
 
   private initRoutes(routes: Route[]) {
-    // const db = Database.init();
-    // db.createDBConnection({
-    //   host: 'localhost',
-    //   user: 'root',
-    //   password: 'kiDx2Bwq@yap',
-    //   database: 'yapli',
+    // const db = mysql.createConnection(DBConfig);
+    // db.connect((err: any) => {
+    //   if (!err) {
+    //     console.debug('Connection Established Successfully');
+    //     db.destroy();
+    //   } else {
+    //     console.debug(
+    //         'Connection Failed!'+ JSON.stringify(err,undefined,2)
+    //     );
+    //   }
     // });
-    // db.isConnected();
-    db.connect((err: any) => {
-      if (!err) {
-        console.debug('Connection Established Successfully');
-        // return true;
-      } else {
-        console.debug(
-            'Connection Failed!'+ JSON.stringify(err,undefined,2)
-        );
-        // return false;
-      }
-    });
-    this.app.set('db', db);
+    // this.app.set('db', db);
     routes.forEach((route) => {
       this.app.use('/_api/v1', route.router);
     })

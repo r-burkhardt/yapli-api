@@ -1,4 +1,4 @@
-import {Database} from './database';
+import {MongoDatabase} from './mongo-database';
 import * as fs from 'fs';
 import * as path from 'path';
 import lockfile = require('proper-lockfile');
@@ -31,10 +31,11 @@ interface YSNObject {
 }
 
 export class YapliStockNumber {
-  private db = new Database();
+  // private db = new MongoDatabase();
   // TODO() Find a relative path to ysn-last-number.json
-  private pathToLastYSN = `/Users/rnagashima/Google Drive/coding-programming/yapli/data/ysn-last-number.json`;
-    // path.join(__dirname, 'data', 'ysn-last-number.json');
+  private pathToLastYSN = `../yapli-data/ysn-last-number.json`
+  // private pathToLastYSN = `/Users/rnagashima/Google Drive/coding-programming/yapli/data/ysn-last-number.json`;
+  //   path.join(__dirname, 'data', 'ysn-last-number.json');
   private retryOptions = {
     retries: {
       retries: 5,
