@@ -1,0 +1,55 @@
+import { ObjectID } from "mongodb";
+
+
+export interface UserObj {
+  _id?: ObjectID;
+  email: string;
+  password: string;
+  last_login?: string;
+  updated_at?: string;
+  birthdate: Date;
+  newsletter_subscription: boolean;
+  active: boolean;
+  approved: boolean;
+  mail_activated: boolean;
+  ip_address: string;
+  registration_key: string;
+  suspension_date: Date;
+  payment_status: string; // enum('confirmed';'pending';'failed') 'pending';
+  user_verified: boolean;
+  user_verified_email: boolean;
+  company_name: string;
+  items_bought: number;
+  balance: string; // COMMENT 'positive balance = debit; negative = credit';
+  is_seller: boolean;
+  // role; //'User';
+  // salt;
+  // listing_approval;
+  // user_verified_last_payment;
+  // user_verified_next_payment;
+  // business_account;
+  // bank_details;
+  // sale_invoices_content;
+  // account_mode; // enum('live';'account');
+  // items_sold;
+  // max_debit;
+  // debit_exceeded_date;
+  // preferred_seller;
+  // preferred_seller_expiration;
+  // api_token;
+  // request_selling_privileges;
+  // store_active;
+  // store_subscription_id;
+  // store_name;
+  // store_category_id;
+  // store_slug;
+  // store_settings;
+  // store_last_payment;
+  // store_next_payment;
+  // store_expiration_email;
+  // limit_bids;
+  // reputation_data;
+  // global_settings;
+  // postage_settings;
+  // prefilled_field;
+}

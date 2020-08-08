@@ -4,7 +4,7 @@ import cors = require('cors');
 import cookieParser from 'cookie-parser';
 import {Route} from './interfaces/routes';
 import {errorHandling} from './middleware/error-handling';
-import mysql from 'mysql';
+// import mysql from 'mysql';
 // import mongodb = require('mongodb');
 
 // import {DBConfig} from './enviroment';

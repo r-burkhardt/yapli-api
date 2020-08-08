@@ -6,10 +6,6 @@ export class ProductImage {
     res.send('Get listing image');
   }
 
-  getAllProductImageByProduct = (req: Request, res: Response) => {
-    res.send('Get all listing image by listing');
-  }
-
   postProductImage = (req: Request, res: Response) => {
     res.send('Post listing image');
   }

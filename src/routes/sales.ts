@@ -12,7 +12,7 @@ export class SalesRoutes {
   }
 
   private initRoutes() {
-    this.router.get(`${this.path}/:vendor`, this.salesController.getAllSalesByVendor);
+    this.router.get(`${this.path}/:seller`, this.salesController.getAllSalesBySeller);
     this.router.get(`${this.path}/:id`, this.salesController.getSales);
     this.router.post(`${this.path}/`, this.salesController.postSales);
     this.router.put(`${this.path}/:id`, this.salesController.putSales);

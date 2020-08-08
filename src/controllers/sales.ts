@@ -6,8 +6,8 @@ export class Sales {
     res.send('Get sales');
   };
 
-  getAllSalesByVendor = (req: Request, res: Response) => {
-    res.send('Get all sales by vendor');
+  getAllSalesBySeller = (req: Request, res: Response) => {
+    res.send('Get all sales by seller');
   };
 
   postSales = (req: Request, res: Response) => {

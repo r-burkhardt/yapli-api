@@ -1,40 +1,31 @@
-// import {createPool,  Pool} from 'mysql';
-// import {DBConfig} from '../enviroment';
-//
-// interface DatabaseConfig {
-//   connectionLimit?: 100;
-//   host: string;
-//   user: string;
-//   password: string;
-//   database: string;
-// }
-//
-// export class MongoDatabase {
-//   connect = async (): Promise<Pool> => {
-//     const connection = await createPool(DBConfig);
-//     return connection;
-//   }
-// }
+import {MongoClient} from 'mongodb';
 
-import {Db, MongoClient} from 'mongodb';
 
+interface DatabaseConfig {
+  host: string;
+  port: string;
+  database: string;
+  user: string;
+  password: string;
+}
 
 export class MongoDatabase {
   private client: MongoClient | undefined;
 
   constructor (
-      private readonly connectionString: string,
-      private readonly portNumber: string,
-      private readonly dbName: string
+      private readonly config: DatabaseConfig
+      // private readonly connectionString: string,
+      // private readonly portNumber: string,
+      // private readonly dbName: string
   ) {}
 
   async connect() {
     try {
       if (!this.client) {
-        console.info(`Connectiong to ${this.connectionString}`);
-        this.client = await MongoClient.connect(`mongodb://${this.connectionString}:${this.portNumber}`, {'useNewUrlParser': true});
+        console.info(`Connectiong to ${this.config.database}`);
+        this.client = await MongoClient.connect(`mongodb://${this.config.host}:${this.config.port}`, {'useNewUrlParser': true});
       } else {
-        console.info(`Connection to ${this.connectionString} exists.`);
+        console.info(`Connection to ${this.config.host} exists.`);
       }
     } catch(error) {
       console.error(error);
@@ -55,9 +46,9 @@ export class MongoDatabase {
 
   attachDatabase() {
     if (this.client) {
-      console.info(`getting db ${this.dbName}`);
+      console.info(`getting db ${this.config.database}`);
 
-      return this.client.db(this.dbName);
+      return this.client.db(this.config.database);
     } else {
       console.error('no db found');
 
