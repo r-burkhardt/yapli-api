@@ -1,7 +1,7 @@
 import {Request, Response} from 'express';
 
 
-export class ProductImage {
+export class ProductImageController {
   getProductImage = (req: Request, res: Response) => {
     res.send('Get listing image');
   }

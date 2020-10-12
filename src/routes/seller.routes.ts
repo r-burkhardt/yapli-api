@@ -1,11 +1,11 @@
 import {Router} from 'express';
-import {Seller} from '../controllers/seller';
+import {SellerController} from '../controllers/seller.controller';
 
 
 export class SellerRoutes {
   path = '/seller';
   router = Router();
-  sellerController = new Seller();
+  sellerController = new SellerController();
 
   constructor () {
     this.initRoutes()

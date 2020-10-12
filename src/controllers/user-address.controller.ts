@@ -5,7 +5,7 @@ import * as httpStatus from 'http-status-codes';
 import {YUsersConfig} from '../enviroment';
 
 
-export class UserAddress {
+export class UserAddressController {
   mongo = new MongoDatabase(YUsersConfig);
   readonly CollectionName = 'yu_user_address';
 
@@ -188,7 +188,7 @@ export class UserAddress {
               res.status(httpStatus.NOT_FOUND)
                   .json({
                     success: false,
-                    msg: 'User address does not exist!'
+                    msg: 'UserController address does not exist!'
                   });
             } else if (!result.modifiedCount) {
               res.status(httpStatus.NOT_MODIFIED)
@@ -200,7 +200,7 @@ export class UserAddress {
               res.status(httpStatus.ACCEPTED)
                   .json({
                     success: true,
-                    msg: 'User address updated!',
+                    msg: 'UserController address updated!',
                   });
             }
           });

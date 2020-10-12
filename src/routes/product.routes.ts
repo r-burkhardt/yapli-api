@@ -1,11 +1,11 @@
 import {Application, request, response, Router} from 'express';
-import {Product} from '../controllers/product';
+import {ProductController} from '../controllers/product.controller';
 
 
 export class ProductRoutes {
   path = '/product';
   router = Router();
-  productController = new Product();
+  productController = new ProductController();
 
   constructor () {
     this.initRoutes();

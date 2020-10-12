@@ -22,7 +22,7 @@ export interface UserObj {
   items_bought: number;
   balance: string; // COMMENT 'positive balance = debit; negative = credit';
   is_seller: boolean;
-  // role; //'User';
+  // role; //'UserController';
   // salt;
   // listing_approval;
   // user_verified_last_payment;

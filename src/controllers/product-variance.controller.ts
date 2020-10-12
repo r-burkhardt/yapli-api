@@ -57,6 +57,9 @@ export class ProductVarianceRequest {
       }
 
       if (reqID) {
+        /**
+         * Get product variance request by id.
+         */
         const filter = {_id: new ObjectID(reqID)};
 
         collection.find(filter, (err: MongoError, document: any) => {
@@ -73,18 +76,21 @@ export class ProductVarianceRequest {
             res.status(httpStatus.OK)
                 .json({
                   success: true,
-                  msg: 'Product variance Found!',
+                  msg: 'ProductController variance Found!',
                   data: document
                 });
           } else {
             res.status(httpStatus.NO_CONTENT)
                 .json({
                   success: false,
-                  msg: 'Product variance Not Found!'
+                  msg: 'ProductController variance Not Found!'
                 });
           }
         });
       } else if (reqSellerID && reqMPN) {
+        /**
+         * Get a product variance request by seller id and mpn.
+         */
         const filter = {seller_id: reqSellerID, mpn: reqMPN};
 
         collection.find(filter, (err: MongoError, document: any) => {
@@ -101,18 +107,21 @@ export class ProductVarianceRequest {
             res.status(httpStatus.OK)
                 .json({
                   success: true,
-                  msg: 'Product variance Found!',
+                  msg: 'ProductController variance Found!',
                   data: document
                 });
           } else {
             res.status(httpStatus.NO_CONTENT)
                 .json({
                   success: false,
-                  msg: 'Product variance Not Found!'
+                  msg: 'ProductController variance Not Found!'
                 });
           }
         });
       } else if (reqSellerID) {
+        /**
+         * Get all product varience request for the requested seller id.
+         */
         const filter = {seller_id: reqSellerID};
 
         collection.find(filter)
@@ -145,6 +154,9 @@ export class ProductVarianceRequest {
           }
         });
       } else if (reqStatus) {
+        /**
+         * Get product variances requests by status.
+         */
         const filter = {status: reqStatus};
 
         let documentCount = 0;
@@ -152,38 +164,39 @@ export class ProductVarianceRequest {
           documentCount = docCount;
         });
 
-        collection.find(filter)
-            .skip(reqPageSize * (reqPageNo - 1))
-            .limit(reqPageSize)
-            .toArray((err: MongoError, documents: any) => {
-              if (err) {
-                res.status(httpStatus.BAD_REQUEST)
-                    .json({
-                      success: false,
-                      msg: `An error has occurred while trying to find the product variance`,
-                      error: err
-                    });
-              }
+        // collection.find(filter)
+        //     .skip(reqPageSize * (reqPageNo - 1))
+        //     .limit(reqPageSize)
+        //     .toArray((err: MongoError, documents: any) => {
+        collection.find(filter, {skip: (reqPageSize * (reqPageNo - 1)), limit: reqPageSize}, (err: MongoError, documents: any) => {
+          if (err) {
+            res.status(httpStatus.BAD_REQUEST)
+                .json({
+                  success: false,
+                  msg: `An error has occurred while trying to find the product variance`,
+                  error: err
+                });
+          }
 
-              if (documents) {
-                res.status(httpStatus.OK)
-                    .json({
-                      success: true,
-                      msg: `Product variances with ${reqStatus} status!`,
-                      page: reqPageNo,
-                      totalPages:
-                          (documentCount > reqPageSize) ? documentCount/reqPageSize : 1,
-                      count: documentCount,
-                      data: documents
-                    });
-              } else {
-                res.status(httpStatus.NO_CONTENT)
-                    .json({
-                      success: false,
-                      msg: `No product variances with ${reqStatus} status found!`
-                    });
-              }
-            });
+          if (documents) {
+            res.status(httpStatus.OK)
+                .json({
+                  success: true,
+                  msg: `Product variances with ${reqStatus} status!`,
+                  page: reqPageNo,
+                  totalPages:
+                      (documentCount > reqPageSize) ? documentCount/reqPageSize : 1,
+                  count: documentCount,
+                  data: documents
+                });
+          } else {
+            res.status(httpStatus.NO_CONTENT)
+                .json({
+                  success: false,
+                  msg: `No product variances with ${reqStatus} status found!`
+                });
+          }
+        });
       }
     });
   }
@@ -299,7 +312,7 @@ export class ProductVarianceRequest {
               res.status(httpStatus.NOT_FOUND)
                   .json({
                     success: false,
-                    msg: 'Product variance request does not exist!'
+                    msg: 'ProductController variance request does not exist!'
                   });
             } else if (!result.modifiedCount) {
               res.status(httpStatus.NOT_MODIFIED)
@@ -311,7 +324,7 @@ export class ProductVarianceRequest {
               res.status(httpStatus.ACCEPTED)
                   .json({
                     success: true,
-                    msg: 'Product variance request updated!',
+                    msg: 'ProductController variance request updated!',
                   });
             }
           });

@@ -7,19 +7,21 @@ import {
   UpdateWriteOpResult,
 } from 'mongodb';
 import * as httpStatus from 'http-status-codes';
-import {YSellersConfig} from '../enviroment';
-import {SellerObj} from '../interfaces/seller-obj';
+import {YUsersConfig} from '../enviroment';
+import {UserObj} from '../interfaces/user-obj';
 import {
   decodeTimeStamp,
   createTimeStamp,
+  encodeDateOfBirth,
+  decodeDateOfBirth,
 } from '../utilities/date-time';
 
 
-export class Seller {
-  mongo = new MongoDatabase(YSellersConfig);
-  readonly CollectionName = 'ys_seller';
+export class UserController {
+  mongo = new MongoDatabase(YUsersConfig);
+  readonly CollectionName = 'yu_user';
 
-  getSeller = async (req: Request, res: Response) => {
+  getUser = async (req: Request, res: Response) => {
     res.type('application/json');
 
     const reqID = req.params.id;
@@ -50,32 +52,35 @@ export class Seller {
           res.status(httpStatus.BAD_REQUEST)
               .json({
                 success: false,
-                msg: 'An error has occurred while trying to find the seller'
+                msg: 'An error has occurred while trying to find the user'
               });
         }
 
         if (document) {
+          delete document.password;
+          document.birthdate = decodeDateOfBirth(document.birthdate);
+
           res.status(httpStatus.OK)
               .json({
                 success: true,
-                msg: 'Seller Found!',
+                msg: 'UserController Found!',
                 data: document
               });
         } else {
           res.status(httpStatus.NO_CONTENT)
               .json({
                 success: false,
-                msg: 'Seller Not Found!'
+                msg: 'UserController Not Found!'
               });
         }
       });
     });
   }
 
-  postSeller = async (req: Request, res: Response) => {
+  postUser = async (req: Request, res: Response) => {
     res.type('application/json');
 
-    const seller = req.body;
+    const user = req.body;
 
     await this.mongo.connect();
     const db = this.mongo.attachDatabase();
@@ -98,7 +103,9 @@ export class Seller {
         return;
       }
 
-      collection.insertOne(seller, (err: MongoError, document: InsertOneWriteOpResult<any>) => {
+      user.birthdate = encodeDateOfBirth(user.birthdate);
+
+      collection.insertOne(user, (err: MongoError, document: InsertOneWriteOpResult<any>) => {
         if (err) {
           res.status(httpStatus.BAD_REQUEST)
               .json({
@@ -112,7 +119,7 @@ export class Seller {
               success: true,
               msg: 'Insertion was successful',
               data: {
-                seller_id: document['ops'][0]._id
+                user_id: document['ops'][0]._id
               }
             });
       });
@@ -121,10 +128,10 @@ export class Seller {
     this.mongo.close();
   }
 
-  putSeller = async (req: Request, res: Response) => {
+  putUser = async (req: Request, res: Response) => {
     res.type('application/json');
 
-    const sellerId = {_id: new ObjectID(req.params.id)};
+    const userId = {_id: new ObjectID(req.params.id)};
     const updateDoc = req.body;
 
     if (updateDoc._id) delete updateDoc._id;
@@ -150,9 +157,15 @@ export class Seller {
       }
 
       updateDoc.updated_at = createTimeStamp();
+      if (updateDoc.birthdate) {
+        updateDoc.birthdate = encodeDateOfBirth(updateDoc.birthdate)
+      }
+
+
+
 
       collection.updateOne(
-          sellerId,
+          userId,
           {$set: updateDoc},
           (err: MongoError, result: UpdateWriteOpResult) => {
             if (err) {
@@ -166,7 +179,7 @@ export class Seller {
               res.status(httpStatus.NOT_FOUND)
                   .json({
                     success: false,
-                    msg: 'Seller does not exist!'
+                    msg: 'UserController does not exist!'
                   });
             } else if (result.modifiedCount === 0) {
               res.status(httpStatus.NOT_MODIFIED)
@@ -178,7 +191,7 @@ export class Seller {
               res.status(httpStatus.ACCEPTED)
                   .json({
                     success: true,
-                    msg: 'Seller updated!',
+                    msg: 'UserController updated!',
                   });
             }
           });
@@ -187,13 +200,13 @@ export class Seller {
     this.mongo.close();
   }
 
-  deleteSeller = async (req: Request, res: Response) => {
+  deleteUser = async (req: Request, res: Response) => {
     res.type('application/json');
 
     res.status(400).json({msg: 'Not implemented'});
   }
 
-  private validateSeller(): boolean {
+  private validateUser(): boolean {
     return true;
   }
 }

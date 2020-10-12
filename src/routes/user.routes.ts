@@ -1,11 +1,11 @@
 import {Router} from 'express';
-import {User} from '../controllers/user';
+import {UserController} from '../controllers/user.controller';
 
 
 export class UserRoutes {
   path = '/user';
   router = Router();
-  userController = new User();
+  userController = new UserController();
 
   constructor () {
     this.initRoutes()

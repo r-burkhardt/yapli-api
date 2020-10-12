@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "npm run build && concurrently --kill-others \"tsc -w\" \"nodemon dist/index.js -e ts\"",
+    "dev": "npm run build && concurrently --kill-others \"tsc -w\" \"nodemon dist/server.js -e ts\"",
     "debug": "npm run build && concurrently --kill-others \"tsc -w\" \"nodemon --inspect dist/index.js -e ts\"",
     "test:watch": "mocha -r ts-node/register -w ./spec/**/*.spec.ts --watch-extensions ts",
     "test": "mocha -r ts-node/register -w ./spec/**/*.spec.ts",

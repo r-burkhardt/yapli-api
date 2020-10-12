@@ -1,11 +1,11 @@
 import {Router} from 'express';
-import {ProductImage} from '../controllers/product-image';
+import {ProductImageController} from '../controllers/product-image.controller';
 
 
 export class ProductImageRoutes {
   path = '/product_image';
   router = Router();
-  productImageController = new ProductImage();
+  productImageController = new ProductImageController();
 
   constructor () {}
 

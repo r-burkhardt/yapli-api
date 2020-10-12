@@ -34,12 +34,13 @@ export interface SellerObj {
   reputation_data: Date;
   global_settings: String;
   postage_settings: any;
+  vip?: string;
   // newsletter_subscription: boolean;
   // ip_address: string;
   // registration_key: string;
   // user_verified: boolean;
   // user_verified_email: boolean;
-  // role; //'User';
+  // role; //'UserController';
   // salt;
   // business_account;
   // bank_details;

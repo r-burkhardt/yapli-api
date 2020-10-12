@@ -1,5 +1,5 @@
 import {Application, request, response, Router} from 'express';
-import {ProductVarianceRequest} from '../controllers/product-variance';
+import {ProductVarianceRequest} from '../controllers/product-variance.controller';
 
 
 export class ProductVarianceRequestRoutes {

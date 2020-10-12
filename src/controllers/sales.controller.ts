@@ -1,7 +1,7 @@
 import {Request, Response} from 'express';
 
 
-export class Sales {
+export class SalesController {
   getSales  = (req: Request, res: Response) => {
     res.send('Get sales');
   };

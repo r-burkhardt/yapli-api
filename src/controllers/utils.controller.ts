@@ -3,7 +3,7 @@ import {MongoDatabase} from '../utilities/mongo-database';
 import {YapliStockNumber} from '../utilities/yapli-stock-number';
 
 
-export class Utils {
+export class UtilsController {
   // db = new MongoDatabase();
   ysn = new YapliStockNumber();
 
@@ -28,5 +28,14 @@ export class Utils {
             message: err
           });
     });
+  }
+
+  getStatus = (req: Request, res: Response) => {
+    const verify = req.query.verify;
+    res.status(200)
+        .json({
+          status: 'running',
+          query: `${verify}`
+        });
   }
 }

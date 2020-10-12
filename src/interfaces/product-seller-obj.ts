@@ -2,7 +2,8 @@ import {ObjectID} from 'mongodb';
 
 export interface ShippingLocation {
   zip_code: string;
-  quantity: number
+  quantity: number;
+  warehouse_id: string;
 }
 
 export interface ProductSellerObj {

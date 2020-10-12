@@ -1,11 +1,11 @@
 import {Router} from 'express';
-import {UserAddress} from '../controllers/user-address';
+import {UserAddressController} from '../controllers/user-address.controller';
 
 
 export class UserAddressRoutes {
   path = '/useraddress';
   router = Router();
-  userAddressController = new UserAddress();
+  userAddressController = new UserAddressController();
 
   constructor () {
     this.initRoutes()
