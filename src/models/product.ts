@@ -1,3 +1,8 @@
+import {Serializable} from '../interfaces/serializable';
+import {ObjectID} from 'mongodb';
+import {ProductCodeType} from '../constants/product.constants';
+
+
 /**
  * ProductController Class
  */
@@ -7,17 +12,89 @@ export interface ProductValidation {
   message: string;
 }
 
-export enum ProductCodes {
-  PC_UPC = 'upc',
-  PC_EAN = 'ean',
-  PC_JAN = 'jan',
-  PC_ISBN = 'isbn',
-}
+export class Product implements Serializable<Product> {
+  public _id?: ObjectID;
+  public ysn?: string;
+  public name = '';
+  public title?: string;
+  public slug?: string;
+  public description = '';
+  public short_description?: string;
+  public search_tags = '';
+  public condition? = ''; // 'new','refurbished','used','opened'
+  public manufacturer?: string;
+  public brand = '';
+  public model?: string;
+  public label?: string;
+  public author?: string;
+  public publisher?: string;
+  public artist?: string;
+  public actor?: string;
+  public director?: string;
+  public studio?: string;
+  public genre?: string;
+  public audience_rating?: string;
+  public ingredients?: string;
+  public nutrition_facts?: string;
+  public color?: string;
+  public package_quantity = 0;
+  public size?: string;
+  public release_date?: Date;
+  public features?: string[];
+  public category_id = ''; // '65535';
+  public addl_category_id?: string[];  // ['65535'];
+  public map?: number;  // Minimum advertised price
+  public weight = 0;
+  public pkg_dim_height = 0;
+  public pkg_dim_width = 0;
+  public pkg_dim_depth = 0;
+  public mpn?: string;
+  public upc?: string;
+  public ean_jan?: string;
+  public isbn10?: string;
+  public isbn13?: string;
+  public sku?: string;
+  public active?: boolean;
+  public taxes?: any[];
+  public other?: Record<string, string | number | any[]>;
+  public updated_at?: Date;
 
-export class Product {
-  constructor () {}
+  constructor (
+  ) {}
 
-  static upcValidation(upc: string): ProductValidation {
+  serialize(): string {
+    return ''
+  }
+
+  deserialize(json: object): Product {
+    return new Product();
+  }
+
+  static validateProductCode(codeType: string, code: string): ProductValidation {
+    let validation: ProductValidation;
+    switch (codeType) {
+      case ProductCodeType.PC_UPC:
+        validation = Product.upcValidation(code);
+        break;
+      case ProductCodeType.PC_EAN:
+        validation = Product.eanValidation(code);
+        break;
+      case ProductCodeType.PC_JAN:
+        validation = Product.janValidation(code);
+        break;
+      case ProductCodeType.PC_ISBN:
+        validation = Product.isbnValidation(code);
+        break;
+      default:
+        validation = {
+          message: 'Not a valid product code type.',
+          valid: false
+        };
+    }
+    return validation;
+  }
+
+  private static upcValidation(upc: string): ProductValidation {
     const rtrnValidation = {valid: false, message: 'Invalid UPC'};
     if (upc.length !== 12 && upc.length !== 8) {
       rtrnValidation.message = 'UPC is invalid length';
@@ -34,7 +111,7 @@ export class Product {
     return rtrnValidation;
   }
 
-  static eanValidation(ean: string): ProductValidation {
+  private static eanValidation(ean: string): ProductValidation {
     const rtrnValidation = {valid: false, message: 'Invalid EAN'};
     if (ean.length !== 13 && ean.length !== 8) {
       rtrnValidation.message = 'EAN is invalid length';
@@ -51,7 +128,7 @@ export class Product {
     return rtrnValidation;
   }
 
-  static janValidation(jan: string): ProductValidation {
+  private static janValidation(jan: string): ProductValidation {
     const janPrefixes = ['45', '49'];
     const rtrnValidation = {valid: false, message: 'Invalid JAN'};
     if (jan.length !== 13 && jan.length !== 8) {
@@ -74,7 +151,7 @@ export class Product {
     return rtrnValidation;
   }
 
-  static isbnValidation(isbn: string): ProductValidation {
+  private static isbnValidation(isbn: string): ProductValidation {
     const rtrnValidation = {valid: false, message: 'Invalid ISBN'};
     if (isbn.length !== 13 && isbn.length !== 10) {
       rtrnValidation.message = 'ISBN is invalid length';
@@ -92,14 +169,23 @@ export class Product {
   }
 
   private static verifyModulo10(code: string): boolean {
-    const check = code.substring(code.length - 1);
-    const noCheck = code.substring(0, code.length - 1);
-    let sum = 0;
-    (noCheck.split('')).map((char, index) => {
-      if (index % 2 === 0) sum += parseInt(char);
-      else sum += (parseInt(char) * 3);
-    });
-    return (10 - (sum % 10)) === parseInt(check);
+    const check = parseInt(code.substring(code.length - 1));
+    const noCheck =
+        code.substring(0, code.length - 1)
+            .split('')
+            .map((char) => {
+              return parseInt(char);
+            })
+            .reverse();
+    let sumOdd = 0;
+    let sumEven = 0;
+    for (let i = 0; i < noCheck.length; i++) {
+      if (i % 2 === 0) sumOdd += (noCheck[i] * 3);
+      else sumEven += noCheck[i];
+    }
+    const calculated = (sumOdd + sumEven) % 10;
+
+    return ((calculated > 0) ? (10 - calculated) : calculated) === check;
   }
 
   private static verifyValidIsbn(code: string): boolean {
@@ -121,4 +207,6 @@ export class Product {
         return false;
     }
   }
+
+  //
 }

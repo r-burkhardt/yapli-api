@@ -1,29 +1,27 @@
+/**
+ * Helpers that are used throughout the API to reduce duplicated code.
+ */
 
-export interface QueryInsert {
-  [key: string]: string|number
-}
-
-export const InsertQueryBuilder = (tableName: string, insertee: QueryInsert, uuidKeys?: string[]): string => {
-  const insertKeyString = Object.keys(insertee).join(', ');
-
-  const uuidValues: any[] = [];
-  if (uuidKeys) {
-    uuidKeys.forEach((key) => {
-      uuidValues.push(insertee[key]);
-    });
+/**
+ * Name: ProcessMessage
+ * Take two parameters, a string or string array as current, and a string as
+ * addition, if current is an empty string it returns addition, if current
+ * is a string it returns an array of the current string and the addition
+ * string, and if current is an array, it pushes addition onto currect and
+ * returns current.
+ */
+export const ProcessMessage = (
+    current: string | string[],
+    addition: string
+): string | string[] => {
+  if (typeof current === 'string' && current.length) {
+    return [current, addition];
   }
-
-  const insertValueString = Object.values(insertee).map((value) => {
-    if (typeof value === 'number') return value;
-    if (typeof value === 'string' && uuidValues.includes(value)) {
-      return `UUID_TO_BIN('${value}')`;
-      // return `(UNHEX('${value}'))`;
-    }
-    return `'${value}'`;
-  }).join(', ');
-
-  // return `Insert INTO ${tableName} (${insertKeyString}) VALUES (${insertValueString})`;
-  return `Insert INTO ${tableName} (${insertKeyString}) VALUES ?`;
+  if (Array.isArray(current)) {
+    current.push(addition)
+    return current;
+  }
+  return addition;
 }
 
 

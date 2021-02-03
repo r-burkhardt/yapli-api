@@ -21,6 +21,11 @@
 //   database: ''
 // }
 
+export enum BarcodeLookupOptions {
+  URL = 'https://api.barcodelookup.com/v2/products',
+  KEY = '10itrko7rgqk60dtdfngb4cc6qtc03',
+}
+
 const databaseConfig = {
   host: 'localhost',
   port: '27017',

@@ -17,5 +17,8 @@ export class ProductRoutes {
     this.router.post(`${this.path}`, this.productController.postProduct);
     this.router.put(`${this.path}/:id`, this.productController.putProduct);
     this.router.delete(`${this.path}/:id`, this.productController.deleteProduct);
+    this.router
+        .get(`${this.path}/product-code`, this.productController.productCode);
   }
 }
+
