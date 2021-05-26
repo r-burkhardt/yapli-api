@@ -25,7 +25,6 @@ export class UserController {
     res.type('application/json');
 
     const reqID = req.params.id;
-    console.log('id', reqID);
 
     await this.mongo.connect();
     const db = this.mongo.attachDatabase();
@@ -63,14 +62,14 @@ export class UserController {
           res.status(httpStatus.OK)
               .json({
                 success: true,
-                msg: 'UserController Found!',
+                msg: 'User Found!',
                 data: document
               });
         } else {
           res.status(httpStatus.NO_CONTENT)
               .json({
                 success: false,
-                msg: 'UserController Not Found!'
+                msg: 'User Not Found!'
               });
         }
       });

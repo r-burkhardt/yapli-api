@@ -13,7 +13,7 @@ export class SavedCartRoutes {
 
   private initRoutes() {
     this.router.get(`${this.path}/:id`, this.shoppingCartController.getShoppingCart);
-    this.router.post(`${this.path}/:id`, this.shoppingCartController.postShoppingCart);
+    this.router.post(`${this.path}/`, this.shoppingCartController.postShoppingCart);
     this.router.put(`${this.path}/:id`, this.shoppingCartController.putShoppingCart);
     this.router.delete(`${this.path}/:id`, this.shoppingCartController.deleteShoppingCart);
   }

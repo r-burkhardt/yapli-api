@@ -104,6 +104,7 @@ export class ProductController {
          */
         const filter = (reqYSN) ? {ysn: reqYSN} : {_id: new ObjectID(reqID)};
         collection.findOne(filter, (err: MongoError, document: any) => {
+          console.log('line 107', document);
           if (err) {
             res.status(httpStatus.BAD_REQUEST)
                 .json({
@@ -307,10 +308,11 @@ export class ProductController {
       const code = req.query.code;
       const condition = req.query.condition;
 
-      this.productCodeValidation(code, type, condition)
+      await this.productCodeValidation(code, type, condition)
           .then((value) => {
             const status = value.status;
             delete value.status;
+            console.log('return from productCodeValidation', status, value);
             res.status(status)
                 .json(value);
           })
@@ -318,7 +320,7 @@ export class ProductController {
             res.status(httpStatus.INTERNAL_SERVER_ERROR)
                 .json({
                   success: false,
-                  msg: 'Error occurred while processing validation',
+                  msg: 'Error occurred while processing validation--',
                   error: err
                 });
           });
@@ -520,69 +522,79 @@ export class ProductController {
 
       // Connects to database Collection
       // @ts-ignore
-      await db.collection(this.CollectionName, (error: MongoError, collection: any) => {
-        if (error) {
-          return Object.assign(
-              {
-                status: httpStatus.INTERNAL_SERVER_ERROR,
-                success: false,
-                msg: `An error occurred accessing collection ${this.CollectionName}`,
-                error: error
-              }
-          );
-        }
-
-        // Search database for existing product
-        const searchField = `${TypeToField[type as keyof typeof TypeToField]}`;
-        const filter = {[searchField]: code, condition: condition};
-        // @ts-ignore
-        collection.find(filter).toArray((err: MongoError, documents: any) => {
-          if (err) {
-            return Object.assign(
-                response,
-                {
-                  status: httpStatus.BAD_REQUEST,
-                  success: false,
-                  msg: 'An error has occurred while trying to find the product',
-                  error: err
-                }
-            );
-          }
-
-          if (documents) {
-            setTimeout(() => {
-              product =
-                  documents.find((doc: Product) => doc.condition === condition);
-            }, 1000);
-          }
-          console.log('inside product', product);
-        }).then(() => {
-          console.log(product.name);
-        });
-      });
+      // await db.collection(this.CollectionName, (error: MongoError, collection: any) => {
+      //   if (error) {
+      //     return Object.assign(
+      //         {
+      //           status: httpStatus.INTERNAL_SERVER_ERROR,
+      //           success: false,
+      //           msg: `An error occurred accessing collection ${this.CollectionName}`,
+      //           error: error
+      //         }
+      //     );
+      //   }
+      //
+      //   // Search database for existing product
+      //   const searchField = `${TypeToField[type as keyof typeof TypeToField]}`;
+      //   const filter = {[searchField]: code, condition: condition};
+      //   // @ts-ignore
+      //   collection.find(filter).toArray((err: MongoError, documents: any) => {
+      //     if (err) {
+      //       return Object.assign(
+      //           response,
+      //           {
+      //             status: httpStatus.BAD_REQUEST,
+      //             success: false,
+      //             msg: 'An error has occurred while trying to find the product',
+      //             error: err
+      //           }
+      //       );
+      //     }
+      //
+      //
+      //     // if (documents) {
+      //     //   setTimeout(() => {
+      //     //     product =
+      //     //         documents.find((doc: Product) => doc.condition === condition);
+      //     //     console.log('inside timeout', product);
+      //     //   }, 1000);
+      //     // }
+      //     console.log('outside timeout', product);
+      //   }).then(() => {
+      //     console.log(product.name);
+      //   });
+      // });
 
       // If no product is returned from database, search barcodelookup.com
       // api for the product data.
 
-      console.log('outside product', product);
+      console.log('outside product', product, response);
       // @ts-ignore
-      if (!product && !response) {
+      if (!product) {
         // search barcode database
+
         bCLProduct = await this.checkGS1BarcodeDB(code);
         if (bCLProduct.found) {
           delete bCLProduct.found;
           product = this.barcodeLookupToYapliProduct(bCLProduct)!;
         }
+        console.log(product);
       }
 
       // Returns the status of the query along with the validation of the
       // product code and if there is a product will return the product also.
       // if (response.hasOwnProperty('success') && response.success)
       return Object.assign(
+          response,
+          {
+            status: 200,
+            success: true
+          },
           validation,
-          {product: product || undefined}
+          {product: product || undefined, return: 'hummm'}
       );
     } else {
+      console.log('bCLProduct');
       // If product code is invalid, returns the status of the query
       // with the validation containing the validtion boolean and the
       // message of why it might be invalid.

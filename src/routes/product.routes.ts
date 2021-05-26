@@ -12,7 +12,6 @@ export class ProductRoutes {
   }
 
   private initRoutes() {
-    // this.router.get(`${this.path}`, this.productController.getAllProduct);
     this.router.get(`${this.path}`, this.productController.getProduct);
     this.router.post(`${this.path}`, this.productController.postProduct);
     this.router.put(`${this.path}/:id`, this.productController.putProduct);

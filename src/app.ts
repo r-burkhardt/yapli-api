@@ -11,12 +11,14 @@ import {errorHandling} from './middleware/error-handling';
 
 
 export class App {
-  app: express.Application;
-  port: (string | number);
-  env: boolean;
+  private app: express.Application;
+  private hostAddress: string;
+  private port: (string | number);
+  private env: boolean;
 
   constructor (routes: Route[]) {
     this.app = express();
+    this.hostAddress = process.env.IP || 'localhost';
     this.port = process.env.PORT || 3000;
     this.env = process.env.NODE_ENV === 'production' ? true : false;
 
@@ -27,7 +29,7 @@ export class App {
 
   public listen() {
     this.app.listen(this.port, () => {
-      console.log(`App listening on the port ${this.port}`);
+      console.log(`Server is running at http://${this.hostAddress}:${this.port}`);
     });
   }
 
