@@ -19,7 +19,7 @@ export class App {
   constructor (routes: Route[]) {
     this.app = express();
     this.hostAddress = process.env.IP || 'localhost';
-    this.port = process.env.PORT || 3000;
+    this.port = process.env.PORT || 4220;
     this.env = process.env.NODE_ENV === 'production' ? true : false;
 
     this.initMiddleware();
