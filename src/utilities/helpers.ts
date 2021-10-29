@@ -10,7 +10,7 @@
  * string, and if current is an array, it pushes addition onto currect and
  * returns current.
  */
-export const ProcessMessage = (
+export const processMessage = (
     current: string | string[],
     addition: string
 ): string | string[] => {

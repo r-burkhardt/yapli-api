@@ -8,7 +8,7 @@ export const levels = {
   info: 2,
   http: 3,
   debug: 4,
-}
+};
 
 /**
  * Define different colors for each level. Colors make the log message more
@@ -20,4 +20,4 @@ export const colors = {
   info: 'green',
   http: 'magenta',
   debug: 'white',
-}
+};

@@ -1,8 +1,15 @@
-import {MongoDatabase} from './mongo-database';
 import * as fs from 'fs';
-import * as path from 'path';
+// import * as path from 'path';
 import lockfile = require('proper-lockfile');
+import {AppNumber} from '../constants/app.constants';
 
+
+/**
+ * //
+ */
+interface YSNObject {
+  ysn: string;
+}
 
 /**
  * Yapli Stock Number(YSN)
@@ -25,25 +32,18 @@ import lockfile = require('proper-lockfile');
  *    68 654 530 707 849 216              36*36*36*36*36*36*36*36*36*26*26
  * 1 785 017 798 404 079 616 Quintillion  36*36*36*36*36*36*36*36*36*26*26*26
  */
-
-interface YSNObject {
-  ysn: string;
-}
-
 export class YapliStockNumber {
-  // private db = new MongoDatabase();
   // TODO() Find a relative path to ysn-last-number.json
   private pathToLastYSN = `../yapli-data/ysn-last-number.json`
-  // private pathToLastYSN = `/Users/rnagashima/Google Drive/coding-programming/yapli/data/ysn-last-number.json`;
   //   path.join(__dirname, 'data', 'ysn-last-number.json');
   private retryOptions = {
     retries: {
       retries: 5,
       factor: 3,
-      minTimeout: 1 * 1000,
-      maxTimeout: 60 * 1000,
+      minTimeout: 1 * AppNumber.BASE_TIME,
+      maxTimeout: 60 * AppNumber.BASE_TIME,
       randomize: true,
-    }
+    },
   };
 
   /**
@@ -57,7 +57,7 @@ export class YapliStockNumber {
    * ysn-last-number.json file is locked while each request for YSNs is
    * being processed.
    * @param {number} amountRequested
-   * @returns {Promise<string[]>}
+   * @return {Promise<string[]>}
    */
   async getYapliStockNumbers(amountRequested: number = 1): Promise<string[]> {
     const returnYSNs: string [] = [];
@@ -69,7 +69,7 @@ export class YapliStockNumber {
         .then(async (release) => {
           const readData = fs.readFileSync(this.pathToLastYSN);
           lastYSN = JSON.parse(readData.toString());
-          const startYSN = JSON.parse(readData.toString());
+          // const startYSN = JSON.parse(readData.toString());
 
           for (let i = 0; i < amountRequested; i++) {
             const newYSN = this.generateNextYSN(lastYSN.ysn);
@@ -77,7 +77,7 @@ export class YapliStockNumber {
             returnYSNs.push(newYSN);
           }
 
-          let data = JSON.stringify(lastYSN, null, 2);
+          const data = JSON.stringify(lastYSN, null, 2);
 
           // update file with the last new YSN generated
           fs.writeFile(this.pathToLastYSN, data, (err) => {
@@ -90,7 +90,7 @@ export class YapliStockNumber {
         })
         .catch((e) => {
           // either lock could not be acquired or releasing it failed
-          console.error('E', e)
+          console.error('E', e);
         });
     return returnYSNs;
   }
@@ -102,10 +102,12 @@ export class YapliStockNumber {
    *
    * @param {string} lastId
    * @param {number} nextIndex
-   * @returns {string}
+   * @return {string}
    */
   private generateNextYSN = (lastId: string, nextIndex: number = 1): string => {
-    const CHAR_36 = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+    const CHAR_36 = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A',
+      'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O',
+      'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
     const CHAR_26 = CHAR_36.slice(10).reverse();
     const id = lastId.split('');
     let index = 0;
@@ -113,7 +115,8 @@ export class YapliStockNumber {
 
     do {
       if (index < 9) {
-        const char36Val = CHAR_36.findIndex(char => char === id[index]);
+        const char36Val =
+            CHAR_36.findIndex((char: string) => char === id[index]);
         if (char36Val + carryOver > 35) {
           id[index] = CHAR_36[char36Val + carryOver - 36];
           carryOver = 1;
@@ -122,7 +125,8 @@ export class YapliStockNumber {
           carryOver = 0;
         }
       } else {
-        const char26Val = CHAR_26.findIndex(char => char === id[index]);
+        const char26Val =
+            CHAR_26.findIndex((char: string) => char === id[index]);
         if (carryOver > 0) {
           if (char26Val + carryOver > 25) {
             id[index] = CHAR_26[char26Val + carryOver - 26];
@@ -144,17 +148,17 @@ export class YapliStockNumber {
    * Used for comparing ysn numbers only.
    * @param {string} a
    * @param {string} b
-   * @returns {number}
+   * @return {number}
    */
   compare(a: YSNObject, b: YSNObject): number {
-    if (a.ysn.substring(0,8) > b.ysn.substring(0,8) &&
+    if (a.ysn.substring(0, 8) > b.ysn.substring(0, 8) &&
         b.ysn.substring(9) >= a.ysn.substring(9)) {
       return -1;
     }
-    if (b.ysn.substring(0,8) > a.ysn.substring(0,8) &&
+    if (b.ysn.substring(0, 8) > a.ysn.substring(0, 8) &&
         a.ysn.substring(9) >= b.ysn.substring(9)) {
       return 1;
     }
-    return 0
+    return 0;
   }
 }

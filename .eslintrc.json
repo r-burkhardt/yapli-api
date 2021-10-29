@@ -15,5 +15,11 @@
         "@typescript-eslint"
     ],
     "rules": {
+        "no-invalid-this": "off",
+        "comma-dangle": "off",
+        "valid-jsdoc": "off",
+        "new-cap": "off",
+        "space-before-function-paren": "off",
+        "arrow-parens": "off"
     }
 }

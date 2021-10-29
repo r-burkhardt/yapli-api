@@ -9,9 +9,16 @@ interface DatabaseConfig {
   password: string;
 }
 
+/**
+ * Mongo Database Client
+ */
 export class MongoDatabase {
   private client: MongoClient | undefined;
 
+  /**
+   * //
+   * @param {DatabaseConfig} config
+   */
   constructor (
       private readonly config: DatabaseConfig
       // private readonly connectionString: string,
@@ -19,20 +26,27 @@ export class MongoDatabase {
       // private readonly dbName: string
   ) {}
 
-  async connect() {
+  /**
+   * //
+   * @returns {Promise<void>}
+   */
+  async connect () {
     try {
       if (!this.client) {
-        console.info(`Connectiong to ${this.config.database}`);
+        console.info(`Connecting to ${this.config.database}`);
         this.client = await MongoClient.connect(`mongodb://${this.config.host}:${this.config.port}`, {'useNewUrlParser': true});
       } else {
         console.info(`Connection to ${this.config.host} exists.`);
       }
-    } catch(error) {
+    } catch (error) {
       console.error(error);
     }
   }
 
-  close() {
+  /**
+   * //
+   */
+  close () {
     if (this.client) {
       this.client.close()
           .then()
